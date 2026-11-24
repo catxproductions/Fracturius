@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b0d12">
+  <meta name="description" content="Fracturius is a modular 2D game engine focused on physics, creative tools, and neural-network-driven gameplay.">
+  <title>Fracturius Engine — Build. Simulate. Evolve.</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0d12;
+      --surface: #11151d;
+      --surface-2: #171d28;
+      --line: #283243;
+      --text: #edf2f8;
+      --muted: #a2afc1;
+      --accent: #8c7cff;
+      --cyan: #62d6d0;
+      --max: 1120px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 78% 0%, rgba(106, 91, 220, .16), transparent 34rem),
+        radial-gradient(ellipse at 5% 28%, rgba(63, 190, 185, .08), transparent 30rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+    .topbar {
+      position: sticky; top: 0; z-index: 10;
+      border-bottom: 1px solid rgba(150, 166, 190, .13);
+      background: rgba(11, 13, 18, .82);
+      backdrop-filter: blur(16px);
+    }
+    .nav { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 800; letter-spacing: .13em; }
+    .mark {
+      width: 30px; height: 30px; display: grid; place-items: center;
+      border: 1px solid rgba(140,124,255,.7); border-radius: 9px;
+      color: var(--cyan); font-size: 18px; transform: rotate(-8deg);
+      box-shadow: 0 0 24px rgba(140,124,255,.16);
+    }
+    .navlinks { display: flex; gap: 25px; color: var(--muted); font-size: .9rem; }
+    .navlinks a:hover { color: var(--text); }
+    .hero { padding: 112px 0 92px; }
+    .eyebrow { color: var(--cyan); font-size: .76rem; font-weight: 800; letter-spacing: .19em; text-transform: uppercase; }
+    h1 { max-width: 850px; margin: 18px 0; font-size: clamp(3.2rem, 9vw, 6.8rem); line-height: .98; letter-spacing: -.075em; }
+    h1 span { color: var(--accent); }
+    .lead { max-width: 690px; color: var(--muted); font-size: clamp(1.05rem, 2vw, 1.25rem); }
+    .actions { display: flex; flex-wrap: wrap; gap: 13px; margin-top: 32px; }
+    .button { display: inline-flex; align-items: center; justify-content: center; padding: 12px 19px; border-radius: 9px; font-weight: 750; font-size: .92rem; }
+    .primary { color: #0b0d12; background: var(--cyan); }
+    .secondary { border: 1px solid var(--line); background: rgba(255,255,255,.025); }
+    .statusline { display: inline-flex; align-items: center; gap: 9px; margin-top: 34px; color: var(--muted); font-size: .82rem; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #e6b86b; box-shadow: 0 0 12px rgba(230,184,107,.5); }
+    section { padding: 76px 0; border-top: 1px solid rgba(150,166,190,.12); }
+    .section-head { max-width: 700px; margin-bottom: 34px; }
+    h2 { margin: 8px 0 12px; font-size: clamp(2rem, 5vw, 3.2rem); letter-spacing: -.055em; line-height: 1.08; }
+    .section-head p, .card p, .step p { color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .card {
+      min-height: 220px; padding: 24px; border: 1px solid var(--line);
+      border-radius: 14px; background: linear-gradient(145deg, rgba(23,29,40,.94), rgba(15,19,27,.88));
+    }
+    .icon { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 10px; color: var(--cyan); background: rgba(98,214,208,.09); font-weight: 800; }
+    h3 { margin: 17px 0 7px; font-size: 1.12rem; }
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+    .panel { padding: 28px; border: 1px solid var(--line); border-radius: 15px; background: var(--surface); }
+    .panel h3 { margin-top: 0; }
+    .tag { display: inline-block; margin: 4px 6px 4px 0; padding: 5px 9px; border: 1px solid var(--line); border-radius: 6px; color: #c7d1df; font-size: .78rem; }
+    .flow { display: grid; gap: 10px; }
+    .flow-item { padding: 14px 16px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface-2); }
+    .flow-item strong { display: block; }
+    .flow-item small { color: var(--muted); }
+    .arrow { text-align: center; color: var(--accent); line-height: 1; }
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; counter-reset: step; }
+    .step { padding: 20px; border-top: 2px solid var(--accent); background: rgba(23,29,40,.62); }
+    .step::before { counter-increment: step; content: "0" counter(step); color: var(--cyan); font-size: .8rem; font-weight: 800; letter-spacing: .12em; }
+    .step h3 { margin-top: 12px; }
+    .roadmap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .roadmap-item { display: flex; gap: 13px; padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: rgba(17,21,29,.7); }
+    .roadmap-item b { color: var(--cyan); }
+    .roadmap-item span { color: var(--muted); font-size: .9rem; }
+    footer { padding: 34px 0 48px; border-top: 1px solid rgba(150,166,190,.12); color: var(--muted); font-size: .85rem; }
+    footer .wrap { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+    @media (max-width: 760px) {
+      .nav { align-items: flex-start; flex-direction: column; padding: 15px 0; gap: 10px; }
+      .navlinks { width: 100%; gap: 17px; overflow-x: auto; padding-bottom: 3px; }
+      .hero { padding: 82px 0 65px; }
+      section { padding: 58px 0; }
+      .grid { grid-template-columns: 1fr; }
+      .split { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: repeat(2, 1fr); }
+      .roadmap { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 420px) {
+      .wrap { width: min(100% - 28px, var(--max)); }
+      .steps { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <nav class="nav wrap" aria-label="Main navigation">
+      <a class="brand" href="#top"><span class="mark" aria-hidden="true">F</span> FRACTURIUS</a>
+      <div class="navlinks">
+        <a href="#about">About</a>
+        <a href="#systems">Systems</a>
+        <a href="#physics">Physics</a>
+        <a href="#workflow">How it works</a>
+        <a href="#roadmap">Roadmap</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" style="border-top:0">
+      <div class="wrap">
+        <div class="eyebrow">A modular 2D game engine</div>
+        <h1>Build. <span>Simulate.</span><br>Evolve.</h1>
+        <p class="lead">Fracturius is a 2D game-engine project designed around flexible tools, expressive physics, and intelligent gameplay. Its goal is to bring simulation, game development, and neural-network experimentation into one connected environment.</p>
+        <div class="actions">
+          <a class="button primary" href="#systems">Explore the engine</a>
+          <a class="button secondary" href="https://github.com/catxproductions/Fracturius">View on GitHub ↗</a>
+        </div>
+        <div class="statusline"><span class="dot" aria-hidden="true"></span> In development — systems and architecture are being established.</div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="wrap split">
+        <div class="section-head">
+          <div class="eyebrow">01 / The idea</div>
+          <h2>One environment. Connected systems.</h2>
+          <p>Fracturius is intended to make it possible to build a 2D game, simulate how its world behaves, and experiment with AI that can learn inside that world. Rather than treating those capabilities as unrelated add-ons, the engine is being designed so they can communicate through clear interfaces.</p>
+        </div>
+        <div class="panel">
+          <h3>Design principles</h3>
+          <p><strong>Modular by design.</strong> Each major subsystem should have a defined responsibility and a usable interface.</p>
+          <p><strong>Physics-aware.</strong> Game objects, collisions, and simulation data should work together instead of being isolated features.</p>
+          <p><strong>Built to experiment.</strong> Developers should be able to inspect behavior, tune systems, and test ideas without fighting the engine.</p>
+          <p><strong>Expandable.</strong> Optional tools should add capability without making the core runtime unnecessarily complicated.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="systems">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="eyebrow">02 / Engine systems</div>
+          <h2>Purpose-built for 2D development.</h2>
+          <p>The engine is planned as a collection of cooperating modules. The boundaries below describe the intended architecture, not a claim that every feature is already implemented.</p>
+        </div>
+        <div class="grid">
+          <article class="card"><div class="icon">PH</div><h3>Physics</h3><p>Rigid-body motion, collision handling, material behavior, constraints, and experimental structural simulation.</p></article>
+          <article class="card"><div class="icon">RE</div><h3>Rendering</h3><p>A 2D renderer for sprites, textures, cameras, animation, tilemaps, particles, and visual effects.</p></article>
+          <article class="card"><div class="icon">NX</div><h3>Nexius neural tools</h3><p>A planned toolkit for constructing, training, inspecting, and using neural networks in game projects.</p></article>
+          <article class="card"><div class="icon">SC</div><h3>Scenes and entities</h3><p>Organize game worlds, objects, components, and reusable scene data.</p></article>
+          <article class="card"><div class="icon">IO</div><h3>Input and audio</h3><p>Handle player controls, device input, sound effects, and music through consistent interfaces.</p></article>
+          <article class="card"><div class="icon">AS</div><h3>Assets and tools</h3><p>Load and organize project resources, with room for debugging and visual editing tools.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="physics">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="eyebrow">03 / Physics foundation</div>
+          <h2>Building on FrameLabs.</h2>
+          <p>Physics is a central part of Fracturius. The project draws on the work and experimentation behind FrameLabs 2 and FrameLabs 3. The long-term goal is to consolidate the useful ideas into a reusable physics subsystem designed for the needs of a general-purpose 2D engine.</p>
+        </div>
+        <div class="split">
+          <div class="panel">
+            <h3>What the physics layer is intended to handle</h3>
+            <div>
+              <span class="tag">Rigid bodies</span><span class="tag">Collision detection</span>
+              <span class="tag">Materials</span><span class="tag">Gravity</span>
+              <span class="tag">Friction</span><span class="tag">Constraints</span>
+              <span class="tag">Structural stress</span><span class="tag">Destruction experiments</span>
+            </div>
+            <p>These are development targets. The implementation will be documented as each capability is integrated and tested.</p>
+          </div>
+          <div class="panel">
+            <h3>How the systems connect</h3>
+            <div class="flow">
+              <div class="flow-item"><strong>Game world</strong><small>Entities hold transforms, colliders, and physics properties.</small></div>
+              <div class="arrow" aria-hidden="true">↓</div>
+              <div class="flow-item"><strong>Physics interface</strong><small>The engine passes bodies, forces, and simulation settings to the physics layer.</small></div>
+              <div class="arrow" aria-hidden="true">↓</div>
+              <div class="flow-item"><strong>Simulation step</strong><small>Physics calculates motion and contacts, then exposes results to the engine.</small></div>
+              <div class="arrow" aria-hidden="true">↓</div>
+              <div class="flow-item"><strong>Game and renderer</strong><small>Updated transforms and events drive visuals, gameplay, and AI inputs.</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="neural">
+      <div class="wrap split">
+        <div class="section-head">
+          <div class="eyebrow">04 / Intelligent gameplay</div>
+          <h2>Neural networks belong in the workflow.</h2>
+          <p>Fracturius is planned to include a neural-network development toolkit built around Nexius. The aim is to make it easier to create networks, connect them to game data, train them, and understand what they are doing.</p>
+        </div>
+        <div class="panel">
+          <h3>Planned neural workflow</h3>
+          <p><strong>Design:</strong> define network layers, neuron counts, and activation functions.</p>
+          <p><strong>Connect:</strong> feed game-state values into network inputs and route outputs to game logic.</p>
+          <p><strong>Train:</strong> experiment with supervised learning, reinforcement learning, and evolutionary methods.</p>
+          <p><strong>Inspect:</strong> visualize activations, training progress, rewards, and network structure.</p>
+          <p>Training methods and acceleration options will be added incrementally and clearly documented.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="workflow">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="eyebrow">05 / How it works</div>
+          <h2>From project setup to a running game.</h2>
+          <p>The intended development workflow keeps game content separate from the engine's underlying systems.</p>
+        </div>
+        <div class="steps">
+          <article class="step"><h3>Create a project</h3><p>Set up a game and organize its scenes, assets, and configuration.</p></article>
+          <article class="step"><h3>Build the world</h3><p>Add entities, components, sprites, and gameplay behavior.</p></article>
+          <article class="step"><h3>Configure simulation</h3><p>Give objects physics properties and define how they interact.</p></article>
+          <article class="step"><h3>Run and iterate</h3><p>Test the game, inspect behavior, and refine systems or AI.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="roadmap">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="eyebrow">06 / Development roadmap</div>
+          <h2>Build the foundation first.</h2>
+          <p>Development will proceed in small, testable milestones. The order can change as the architecture becomes clearer.</p>
+        </div>
+        <div class="roadmap">
+          <div class="roadmap-item"><b>01</b><div><strong>Core runtime</strong><br><span>Application lifecycle, timing, and main loop.</span></div></div>
+          <div class="roadmap-item"><b>02</b><div><strong>Physics foundation</strong><br><span>Review, isolate, and integrate FrameLabs concepts.</span></div></div>
+          <div class="roadmap-item"><b>03</b><div><strong>2D renderer</strong><br><span>Draw sprites, textures, and camera views.</span></div></div>
+          <div class="roadmap-item"><b>04</b><div><strong>World architecture</strong><br><span>Entities, components, scenes, and input.</span></div></div>
+          <div class="roadmap-item"><b>05</b><div><strong>Nexius integration</strong><br><span>Connect neural networks to game state and behavior.</span></div></div>
+          <div class="roadmap-item"><b>06</b><div><strong>Developer tooling</strong><br><span>Debugging, asset workflows, and a visual editor.</span></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span><strong>FRACTURIUS</strong> — Build. Simulate. Evolve.</span>
+      <span>An independent 2D game-engine project · Currently in development</span>
+    </div>
+  </footer>
+</body>
+</html>
